@@ -26,6 +26,7 @@ class MoviesController < ApplicationController
     if params[:ratings].nil? && params[:sort_by].nil?
       #In case both session[:ratings] and sessioin[:sort_by] are nil, prevent infinite redirect loop
       if !session[:ratings].nil? || !session[:sort_by].nil?
+        flash.keep
         redirect_to movies_path(:sort_by => session[:sort_by], :ratings => session[:ratings])
       end
     end
