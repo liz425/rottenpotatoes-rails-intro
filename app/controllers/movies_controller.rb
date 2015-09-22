@@ -1,7 +1,7 @@
 class MoviesController < ApplicationController
 
   def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date, :sort_by)
+    params.require(:movie).permit(:title, :ratings, :description, :release_date, :sort_by)
   end
 
   def show
@@ -12,10 +12,23 @@ class MoviesController < ApplicationController
 
   def index
     @sort_by = params[:sort_by]
-    if(@sort_by)
-      @movies = Movie.all.order(@sort_by)
+    @all_ratings = Movie.all_ratings
+    @ratings = params[:ratings]
+
+    #If no rating check_box checked, show all movies
+    if(@ratings)
+      @rating_keys = @ratings.keys
     else
-      @movies = Movie.all
+      @rating_keys = @all_ratings
+    end
+
+    #Select movies been checked
+    @movies = Movie.where(rating: @rating_keys)
+    #Sort movies 
+    if(@sort_by)
+      @movies = @movies.order(@sort_by)
+    else
+      @movies = @movies.all
     end
   end
 
